@@ -1,36 +1,69 @@
-from django.shortcuts import render ,redirect
-from django.http.response import HttpResponse
-from .forms import AccountAuthenticationForm
+from django.shortcuts import render, redirect
+from django.http import HttpResponse
+from .forms import AccountAuthenticationForm, RegistrationForm
 from django.contrib.auth import authenticate, login, logout
+from account.models import Account
+from django.conf import settings
 
 
+def home(requset):
+    return render(requset, 'account/home2.html')
 
-
-
-def home(request):
-    return render(request, 'account/home2.html', {"name":"amirykta"})
-   
 
 
 def login_view(request):
     context = {}
     user = request.user
     if user.is_authenticated:
-        return redirect("account:home")
+        return redirect('account:home')
     if request.POST:
         form = AccountAuthenticationForm(request.POST)
         if form.is_valid():
-            email = form.cleaned_data.get("email")
-            raw_password = form.cleaned_data.get("password")
+            print('form', form.cleaned_data)
+            email = form.cleaned_data.get('email')
+            raw_password = form.cleaned_data.get('password')
             user = authenticate(email=email, password=raw_password)
             if user:
                 login(request, user)
-                return redirect("account:home")
+                return redirect('account:home')
     else:
         form = AccountAuthenticationForm()
-
-    context["login_form"] = form    
+    
+    context['login_form'] = form
 
     return render(request, 'account/login.html', context)
 
 
+
+
+
+def register_view(request, *args, **kwargs):
+    user = request.user
+    if user.is_authenticated:
+        return HttpResponse("You are already authenticated as " + str(user.email))
+
+    context = {}
+    if request.POST:
+        form = RegistrationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            email = form.cleaned_data.get('email').lower()
+            raw_password = form.cleaned_data.get('password1')
+            account = authenticate(email=email, password=raw_password)
+            login(request, account)
+            destination = kwargs.get("next")
+            if destination:
+                return redirect(destination)
+            return redirect("account:home")
+        else:
+            context['registration_form'] = form
+
+    else:
+        form = RegistrationForm()
+        context['registration_form'] = form
+    return render(request, 'account/register.html', context)
+
+
+# def logout_view(request):
+#     logout(request)
+#     return redirect('account:home')
