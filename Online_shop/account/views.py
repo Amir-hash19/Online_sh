@@ -72,3 +72,18 @@ def register_view(request, *args, **kwargs):
 def logout_view(request):
     logout(request)
     return redirect('account:home')
+
+
+
+
+def profile_view(request, *args, **kwargs):
+    context = {}
+    user_id = kwargs.get("user_id")
+    try:
+        account = Account.objects.get(pk=user_id)
+    except:
+        return HttpResponse("SomeThing went Wrong!")
+
+    context["user"] = account
+    return render(request, 'account/profile.html', context)         
+    
