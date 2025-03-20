@@ -37,6 +37,8 @@ def login_view(request):
 
 
 
+
+
 def register_view(request, *args, **kwargs):
     user = request.user
     if user.is_authenticated:
@@ -64,6 +66,9 @@ def register_view(request, *args, **kwargs):
     return render(request, 'account/register.html', context)
 
 
-# def logout_view(request):
-#     logout(request)
-#     return redirect('account:home')
+
+
+
+def logout_view(request):
+    logout(request)
+    return redirect('account:home')
