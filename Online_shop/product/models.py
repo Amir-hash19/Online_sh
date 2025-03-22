@@ -13,7 +13,7 @@ class Category(models.Model):
 
 
 def get_product_image_filepath(self, filename):
-    return 'product/product_images/' + str(self.pk) + '/product_image.png'
+    return 'product/product_images/None/product_image.png'
 
 
 def get_default_product_image():
