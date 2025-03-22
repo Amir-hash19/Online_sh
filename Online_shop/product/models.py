@@ -54,3 +54,14 @@ class OrderItem(models.Model):
 
     def __str__(self):
         return f"{self.product.title}"
+
+
+
+class Cart(models.Model):
+    user = models.ForeignKey(to=Account, on_delete=models.CASCADE)
+    product = models.ForeignKey(to=Product, on_delete=models.CASCADE)
+    quantity = models.IntegerField(default=0)
+    create_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.product.title}"
