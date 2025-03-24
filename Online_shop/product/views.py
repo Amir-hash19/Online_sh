@@ -74,6 +74,9 @@ def update_cart(request):
             cart_item.quantity -= 1
         cart_item.save()    
 
+        if cart_item.quantity == 0:
+            cart_item.delete()
+
     return JsonResponse({"status":"Update Successfully!"})    
 
 
