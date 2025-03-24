@@ -25,6 +25,7 @@ class Product(models.Model):
     slug = models.SlugField(max_length=200, unique=True)
     description = models.TextField(null=True, blank=True)
     price = models.FloatField(blank=True, null=True)
+    quantity = models.IntegerField(null=False, blank=False)
     category = models.ForeignKey(to=Category, on_delete=models.CASCADE)
     image = models.ImageField(upload_to=get_product_image_filepath, default=get_default_product_image, blank=True, null=True)
 

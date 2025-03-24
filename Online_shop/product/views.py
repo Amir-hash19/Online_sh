@@ -1,6 +1,8 @@
 from django.shortcuts import render, redirect
 from. models import Product, Cart
 from django.http import JsonResponse
+import json
+
 
 
 def view_product(request):
@@ -11,17 +13,11 @@ def view_product(request):
 
 
 
-
-
-
-
 def product_detail(request, prod_id):
     context = {}
     product = Product.objects.get(id=prod_id)
     context["product"] = product
     return render(request, "product/product_detail.html", context)
-
-
 
 
 
@@ -46,20 +42,40 @@ def add_to_cart(request):
 
 
 
-
-
-
 def checkout(request):
     context = {}
     cart_items = Cart.objects.filter(user=request.user)
     context["cart_items"] = cart_items
     context["cart_total"] = cart_items.count()
-
+    cart_total = 0
     total_price = 0
     if cart_items:
         for item in cart_items:
             total_price += item.product.price
+            cart_total += item.quantity
 
         context["total_price"] = total_price
+        context["cart_total"] = cart_total
 
     return render(request, "product/checkout.html", context)    
+
+
+
+def update_cart(request):
+    data = json.loads(request.body)
+    prod_id = data["productId"]
+    action = data["action"]
+    cart_item = Cart.objects.filter(user=request.user, product_id = prod_id)[0]
+
+    if cart_item:
+        if action == "add":
+            cart_item.quantity += 1
+        elif action == "remove":
+            cart_item.quantity -= 1
+        cart_item.save()    
+
+    return JsonResponse({"status":"Update Successfully!"})    
+
+
+
+     
