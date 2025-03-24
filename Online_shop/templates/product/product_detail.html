@@ -18,7 +18,7 @@
                     <h2 class="mt-5">
                         <small class="text-success">${{ product.price }}</small>
                     </h2>
-                    <button type="button" class="addToCartBtn btn btn-primary btn-rounded">Add to cart</button>
+                    <a type="button" class="addToCartBtn btn btn-primary btn-rounded" href="{% url 'product:checkout' %}">Add to cart</a>
                 </div>
             </div>
         </div>
